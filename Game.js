@@ -1,18 +1,63 @@
 import View from './View'
 
 export default class Game {
-  constructor(root, width, height, mines, wrongs) {
+  constructor(
+    root,
+    width,
+    height,
+    mines,
+    wrongs,
+    onLose,
+    onWin,
+    topLeftCellIsAlwaysEmpty = true
+  ) {
     this.root = root
     this.width = width
     this.height = height
     this.mines = mines
     this.wrongs = wrongs
+    this.topLeftCellIsAlwaysEmpty = topLeftCellIsAlwaysEmpty
     this.view = null
     this.gamefield = []
+    this.onLose = onLose
+  }
+
+  checkForWin() {
+    // add conditions
+  }
+
+  onCellClick(x, y) {
+    const cell = this.gamefield[y][x]
+    if (cell.open || cell.flagMine || cell.flagWrong) return
+
+    cell.open = true
+    if (cell.mine && typeof this.onLose === 'function') {
+      this.onLose()
+    }
+    this.view.renderGamefield(this.gamefield, cell.mine)
+  }
+
+  onCellRightClick(x, y) {
+    const cell = this.gamefield[y][x]
+    if (cell.open) return
+
+    if (cell.flagWrong) {
+      cell.flagMine = true
+      cell.flagWrong = false
+    } else if (cell.flagMine) {
+      cell.flagMine = false
+    } else {
+      cell.flagWrong = true
+    }
+
+    this.view.renderGamefield(this.gamefield)
   }
 
   randomizeMinesAndWrongs() {
-    const allCells = this.gamefield.flat()
+    let allCells = this.gamefield.flat()
+    if (this.topLeftCellIsAlwaysEmpty) {
+      allCells = allCells.slice(1, allCells.length - 1)
+    }
     const willBeMines = []
     const willBeWrongs = []
 
@@ -112,7 +157,7 @@ export default class Game {
   fillTheOthers() {
     this.gamefield = this.gamefield.map((row, y) =>
       row.map((cell, x) => {
-        if (cell.mine || cell.wrong) {
+        if (cell.mine) {
           return cell
         }
 
@@ -153,6 +198,8 @@ export default class Game {
           nearbyWrongs: 0,
           flagMine: false,
           flagWrong: false,
+          onClick: () => this.onCellClick(w, h),
+          onRightClick: () => this.onCellRightClick(w, h),
         }
       }
     }

@@ -13,6 +13,11 @@ body {
   min-height: 100vh;
 }
 
+.scores {
+  display: flex;
+  justify-content: space-between;
+}
+
 .gamefield {
   display: grid;
 }
@@ -24,26 +29,46 @@ body {
   justify-content: space-around;
   border: 1px solid #ddd;
 
-  &.mine {
-    background-color: red;
-  }
-
-  &.wrong {
-    background-color: orange;
-  }
-
   &:not(.open) {
     cursor: pointer;
 
-    // &::before {
-    //   content: '';
-    //   position: absolute;
-    //   left: 0;
-    //   top: 0;
-    //   width: 100%;
-    //   height: 100%;
-    //   background-color: rgb(36, 41, 68);
-    // }
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgb(36, 41, 68);
+    }
+
+    &.flag-wrong,
+    &.flag-mine {
+      &::after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        top: 5px;
+        right: 5px;
+        border-radius: 50%;
+        background-color: red;
+      }
+    }
+
+    &.flag-wrong::after {
+      background-color: orange;
+    }
+  }
+
+  &.open {
+    &.mine {
+      background-color: red;
+    }
+
+    &.wrong {
+      background-color: rgb(98, 64, 0);
+    }
   }
 
   .mines {
@@ -52,4 +77,25 @@ body {
   .wrongs {
     color: orange;
   }
+}
+
+.game-stop * {
+  cursor: default;
+  pointer-events: none;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.reset-button {
+  cursor: pointer;
+  text-align: center;
+  color: #ddd;
+  border: 1px solid;
+  background-color: transparent;
+  margin-top: 20px;
+  padding: 10px 20px;
+  width: 100%;
 }

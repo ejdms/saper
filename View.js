@@ -5,7 +5,21 @@ export default class View {
     this.root = root
   }
 
+  addEventListeners(gamefield) {
+    const cells = Array.from(this.root.querySelectorAll('.cell'))
+    cells.forEach((cell) => {
+      const { x, y } = cell.dataset
+      cell.addEventListener('click', () => gamefield[y][x].onClick())
+      cell.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        gamefield[y][x].onRightClick()
+      })
+    })
+  }
+
   renderCell({
+    x,
+    y,
     open,
     mine,
     wrong,
@@ -15,7 +29,11 @@ export default class View {
     flagWrong,
   }) {
     // add classes
-    let html = `<div style="width: ${SIZE_OF_CELL}px; height: ${SIZE_OF_CELL}px" class="cell`
+    let html = `<div
+      style="width: ${SIZE_OF_CELL}px; height: ${SIZE_OF_CELL}px"
+      data-x="${x}"
+      data-y="${y}"
+      class="cell`
     if (mine) {
       html += ' mine'
     }
@@ -33,7 +51,7 @@ export default class View {
     }
     html += '">'
     // add content
-    if (!mine && !wrong) {
+    if (!mine) {
       if (nearbyMines) {
         html += `<span class="mines">${nearbyMines}</span>`
       }
@@ -56,7 +74,7 @@ export default class View {
     return html
   }
 
-  renderGamefield(gamefield) {
+  renderGamefield(gamefield, gameStop) {
     if (typeof gamefield?.[0]?.[0] !== 'undefined') {
       const numberOfColumns = gamefield[0].length
       const numberOfRows = gamefield.length
@@ -71,12 +89,16 @@ export default class View {
       }
       templateStyle += `; width: ${SIZE_OF_CELL * numberOfColumns}px`
 
+      const className = `gamefield${gameStop ? ' game-stop' : ''}`
       const html = `
-        <div class="gamefield" style="${templateStyle}">
+        <div class="${className}" style="${templateStyle}">
           ${this.renderCells(gamefield)}
         </div>
       `
       this.root.innerHTML = html
+      if (!gameStop) {
+        this.addEventListeners(gamefield)
+      }
     } else {
       console.log('some cell is undefiend!!!!')
     }
