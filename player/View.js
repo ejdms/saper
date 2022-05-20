@@ -12,7 +12,9 @@ export default class View {
 			(level) => level.number === this.player.level + 1
 		)
 
-		const experienceNeeded = nextLevel.experienceNeeded - this.player.experience
+		const experienceNeeded = nextLevel
+			? nextLevel.experienceNeeded - this.player.experience
+			: 'MAX LEVEL'
 
 		const html = `
       <div>Experience: ${this.player.experience}</div>

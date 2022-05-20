@@ -7,7 +7,8 @@ export default class Player {
 				JSON.parse(localStorage.getItem('player'))) ||
 			{}
 		this.experience = experience
-		this.level = this.calculateLevel(experience)
+		this.level = 0
+		this.calculateLevel(experience)
 	}
 
 	calculateLevel(experience) {
@@ -17,7 +18,7 @@ export default class Player {
 				currentLevel = level.number
 			}
 		})
-		return currentLevel
+		this.level = currentLevel
 	}
 
 	addExperience(amount) {
