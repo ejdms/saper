@@ -25,6 +25,7 @@ export default class Saper {
 			onWin: this.onGameWin,
 			onCellClick: this.onCellClick,
 			topLeftCellIsAlwaysEmpty: true,
+			topLeftCellSiblingsAreNeverMine: true,
 		})
 		this.game.init()
 	}

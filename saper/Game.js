@@ -11,6 +11,7 @@ export default class Game {
 		onWin,
 		onCellClick,
 		topLeftCellIsAlwaysEmpty = true,
+		topLeftCellSiblingsAreNeverMine = true,
 	}) {
 		this.root = root
 		this.width = width
@@ -18,6 +19,7 @@ export default class Game {
 		this.mines = mines
 		this.wrongs = wrongs
 		this.topLeftCellIsAlwaysEmpty = topLeftCellIsAlwaysEmpty
+		this.topLeftCellSiblingsAreNeverMine = topLeftCellSiblingsAreNeverMine
 		this.view = null
 		this.gamefield = []
 		this.onLose = onLose
@@ -139,15 +141,10 @@ export default class Game {
 		if (this.topLeftCellIsAlwaysEmpty) {
 			allCells = allCells.slice(1, allCells.length - 1)
 		}
-		const willBeMines = []
-		const willBeWrongs = []
 
-		for (let i = 0; i < this.mines; i++) {
-			if (allCells.length === 0) throw new Error('too many mines!!!')
-			const randomIndex = Math.floor(Math.random() * allCells.length)
-			willBeMines.push({ ...allCells[randomIndex] })
-			allCells.splice(randomIndex, 1)
-		}
+		// WRONGS
+
+		const willBeWrongs = []
 
 		for (let i = 0; i < this.wrongs; i++) {
 			if (allCells.length === 0) throw new Error('too many wrongs!!!')
@@ -156,12 +153,34 @@ export default class Game {
 			allCells.splice(randomIndex, 1)
 		}
 
-		willBeMines.forEach(({ x, y }) => {
-			this.gamefield[y][x].mine = true
-		})
-
 		willBeWrongs.forEach(({ x, y }) => {
 			this.gamefield[y][x].wrong = true
+		})
+
+		// MINES
+
+		const willBeMines = []
+
+		if (this.topLeftCellSiblingsAreNeverMine) {
+			// cells forbidden to be mines
+			const forbiddenCells = this.getAllCellsSiblings(this.gamefield[0][0])
+			allCells = allCells.filter(
+				(cell) =>
+					!forbiddenCells.some((forbiddenCell) => {
+						return cell.x === forbiddenCell.x && cell.y === forbiddenCell.y
+					})
+			)
+		}
+
+		for (let i = 0; i < this.mines; i++) {
+			if (allCells.length === 0) throw new Error('too many mines!!!')
+			const randomIndex = Math.floor(Math.random() * allCells.length)
+			willBeMines.push({ ...allCells[randomIndex] })
+			allCells.splice(randomIndex, 1)
+		}
+
+		willBeMines.forEach(({ x, y }) => {
+			this.gamefield[y][x].mine = true
 		})
 	}
 
@@ -269,6 +288,7 @@ export default class Game {
 		for (let h = 0; h < height; h++) {
 			this.gamefield[h] = []
 			for (let w = 0; w < width; w++) {
+				const shiny = this.topLeftCellIsAlwaysEmpty && w === 0 && h === 0
 				this.gamefield[h][w] = {
 					x: w,
 					y: h,
@@ -281,6 +301,7 @@ export default class Game {
 					flagWrong: false,
 					onClick: () => this.onCellClick(w, h),
 					onRightClick: () => this.onCellRightClick(w, h),
+					shiny,
 				}
 			}
 		}

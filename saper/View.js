@@ -27,6 +27,7 @@ export default class View {
 		nearbyWrongs,
 		flagMine,
 		flagWrong,
+		shiny,
 	}) {
 		// add classes
 		let html = `<div
@@ -48,6 +49,9 @@ export default class View {
 		}
 		if (flagWrong) {
 			html += ' flag-wrong'
+		}
+		if (shiny) {
+			html += ' shiny'
 		}
 		html += '">'
 		// add content
