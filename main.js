@@ -31,6 +31,7 @@ export class Main {
 	}
 
 	onGameWin = () => {
+		this.player.addExperience(this.difficulty.experiencePerWin)
 		this.scores.addWin()
 	}
 }

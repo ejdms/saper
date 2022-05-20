@@ -10,10 +10,6 @@
 	}
 }
 
-.shiny {
-	animation: shine 1s linear 0s infinite;
-}
-
 * {
 	padding: 0;
 	margin: 0;
@@ -74,6 +70,10 @@ body {
 
 		&.flag-wrong::after {
 			background-color: orange;
+		}
+
+		&.shiny {
+			animation: shine 1s linear 0s infinite;
 		}
 	}
 
