@@ -23,6 +23,60 @@ export default class Game {
 		this.onWin = onWin
 	}
 
+	isCellEmpty(cell) {
+		return !cell.mine && !cell.nearbyMines && !cell.nearbyWrongs
+	}
+
+	recursiveOpenEmptySiblings(cell) {
+		const cellsToOpen = []
+		const cellsAlreadyTested = []
+
+		let currentItertion = 0
+
+		const check = (cell) => {
+			currentItertion++
+			if (currentItertion > 1000) {
+				return
+			}
+
+			cellsAlreadyTested.push(cell)
+
+			if (!this.isCellEmpty(cell)) {
+				return
+			}
+
+			const siblings = this.getAllCellsSiblings(cell)
+			siblings.forEach((sibling) => {
+				if (
+					cellsAlreadyTested.find(
+						(cell) => cell.x === sibling.x && cell.y === sibling.y
+					)
+				)
+					return
+				cellsToOpen.push(sibling)
+			})
+
+			const untestedEmptyCells = cellsToOpen.filter((cellToOpen) => {
+				const isAlreadyTested = !!cellsAlreadyTested.find(
+					(cellTested) =>
+						cellTested.x === cellToOpen.x && cellTested.y === cellToOpen.y
+				)
+				return this.isCellEmpty(cellToOpen) && !isAlreadyTested
+			})
+
+			if (untestedEmptyCells.length) {
+				untestedEmptyCells.forEach(check)
+			}
+		}
+
+		check(cell)
+
+		cellsToOpen.forEach((cell) => {
+			cell.open = true
+		})
+		this.view.renderGamefield(this.gamefield)
+	}
+
 	checkForWin() {
 		const isWin = !this.gamefield.some((row) =>
 			row.some((cell) => {
@@ -52,6 +106,9 @@ export default class Game {
 		this.view.renderGamefield(this.gamefield, cell.mine)
 		if (!cell.mine) {
 			this.checkForWin()
+		}
+		if (this.isCellEmpty(cell)) {
+			this.recursiveOpenEmptySiblings(cell)
 		}
 	}
 
@@ -103,7 +160,7 @@ export default class Game {
 		})
 	}
 
-	getAllCellsSiblings(cell) {
+	getAllCellsSiblings = (cell) => {
 		const { x, y } = cell
 		const maxY = this.gamefield.length - 1
 		const maxX = this.gamefield[0].length - 1
