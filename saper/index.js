@@ -3,25 +3,29 @@ import Game from './Game'
 const resetButton = document.querySelector('#resetButton')
 
 export default class Saper {
-	constructor(root, onGameWin, onGameLose) {
+	constructor({ root, onGameWin, onGameLose, onCellClick, difficulty }) {
 		this.root = root
 		this.onGameWinFromProps = onGameWin
 		this.onGameLoseFromProps = onGameLose
+		this.onCellClickFromProps = onCellClick
 		resetButton.addEventListener('click', this.resetGame)
 		this.game = null
+		this.difficulty = difficulty
 	}
 
 	init = () => {
-		this.game = new Game(
-			document.querySelector('#game'),
-			5,
-			3,
-			1,
-			1,
-			this.onGameLose,
-			this.onGameWin,
-			true
-		)
+		const { width, height, mines, wrongs } = this.difficulty
+		this.game = new Game({
+			root: document.querySelector('#game'),
+			width,
+			height,
+			mines,
+			wrongs,
+			onLose: this.onGameLose,
+			onWin: this.onGameWin,
+			onCellClick: this.onCellClick,
+			topLeftCellIsAlwaysEmpty: true,
+		})
 		this.game.init()
 	}
 
@@ -31,6 +35,12 @@ export default class Saper {
 		}
 		if (!display && !resetButton.classList.contains('hidden')) {
 			resetButton.classList.add('hidden')
+		}
+	}
+
+	onCellClick = (cell) => {
+		if (typeof this.onCellClickFromProps === 'function') {
+			this.onCellClickFromProps(cell)
 		}
 	}
 

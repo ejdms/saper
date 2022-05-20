@@ -1,0 +1,32 @@
+export default [
+	{
+		id: 'VERY_EASY',
+		name: 'very easy',
+		width: 5,
+		height: 5,
+		mines: 3,
+		wrongs: 3,
+		experiencePerOpen: 5,
+		experiencePerWin: 30,
+	},
+	{
+		id: 'EASY',
+		name: 'easy',
+		width: 7,
+		height: 6,
+		mines: 5,
+		wrongs: 5,
+		experiencePerOpen: 10,
+		experiencePerWin: 50,
+	},
+	{
+		id: 'MEDIUM',
+		name: 'medium',
+		width: 7,
+		height: 6,
+		mines: 8,
+		wrongs: 5,
+		experiencePerOpen: 15,
+		experiencePerWin: 75,
+	},
+]

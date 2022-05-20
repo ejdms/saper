@@ -1,7 +1,7 @@
 import View from './View'
 
 export default class Game {
-	constructor(
+	constructor({
 		root,
 		width,
 		height,
@@ -9,8 +9,9 @@ export default class Game {
 		wrongs,
 		onLose,
 		onWin,
-		topLeftCellIsAlwaysEmpty = true
-	) {
+		onCellClick,
+		topLeftCellIsAlwaysEmpty = true,
+	}) {
 		this.root = root
 		this.width = width
 		this.height = height
@@ -21,6 +22,7 @@ export default class Game {
 		this.gamefield = []
 		this.onLose = onLose
 		this.onWin = onWin
+		this.onCellClickFromProps = onCellClick
 	}
 
 	isCellEmpty(cell) {
@@ -100,6 +102,9 @@ export default class Game {
 		if (cell.open || cell.flagMine || cell.flagWrong) return
 
 		cell.open = true
+		if (typeof this.onCellClickFromProps === 'function') {
+			this.onCellClickFromProps(cell)
+		}
 		if (cell.mine && typeof this.onLose === 'function') {
 			this.onLose()
 		}
