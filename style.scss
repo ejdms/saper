@@ -15,6 +15,7 @@
 	margin: 0;
 	box-sizing: border-box;
 	color: #ddd;
+	font-family: sans-serif;
 }
 
 body {
@@ -105,7 +106,7 @@ body {
 	pointer-events: none;
 }
 
-.reset-button {
+.button {
 	cursor: pointer;
 	text-align: center;
 	color: #ddd;
@@ -118,4 +119,11 @@ body {
 
 #player {
 	margin-bottom: 20px;
+}
+
+.difficulty-select {
+	text-align: center;
+	h3 {
+		text-transform: uppercase;
+	}
 }

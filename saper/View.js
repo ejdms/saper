@@ -1,8 +1,13 @@
+import difficultyLevels from '../collections/difficultyLevels'
+
 const SIZE_OF_CELL = 50
 
 export default class View {
-	constructor(root) {
+	constructor({ root, scores, player, toggleButtons }) {
 		this.root = root
+		this.scores = scores
+		this.player = player
+		this.toggleButtons = toggleButtons
 	}
 
 	addEventListeners(gamefield) {
@@ -106,5 +111,48 @@ export default class View {
 		} else {
 			console.log('some cell is undefiend!!!!')
 		}
+	}
+
+	hideAdditionalInfos = () => {
+		this.toggleButtons(false)
+		this.scores.hideScores()
+		this.player.view.hidePlayer()
+	}
+
+	showAdditionalInfos = () => {
+		this.scores.renderScores()
+		this.player.view.renderPlayer()
+	}
+
+	async renderDifficultyLevelSelectAndGetChoice() {
+		this.hideAdditionalInfos()
+
+		return new Promise((resolve) => {
+			const html = `
+      <div class="difficulty-select">
+        <h3>Choose difficulty:</h3>
+        ${difficultyLevels
+					.map(
+						(diffLevel) =>
+							`<button class="button" data-difficulty="${diffLevel.id}">
+                ${diffLevel.name}
+              </button>`
+					)
+					.join('')}
+      </div>
+      `
+			this.root.innerHTML = html
+			const allDifficulties = this.root.querySelectorAll('[data-difficulty]')
+			allDifficulties.forEach((difficulty) => {
+				difficulty.addEventListener('click', (e) => {
+					const difficultyId = e.target.dataset.difficulty
+					const difficulty = difficultyLevels.find(
+						(diff) => diff.id === difficultyId
+					)
+					this.showAdditionalInfos()
+					resolve(difficulty)
+				})
+			})
+		})
 	}
 }

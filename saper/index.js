@@ -1,22 +1,37 @@
 import Game from './Game'
 
-const resetButton = document.querySelector('#resetButton')
-
 export default class Saper {
-	constructor({ root, onGameWin, onGameLose, onCellClick, difficulty }) {
+	constructor({
+		root,
+		view,
+		onGameWin,
+		onGameLose,
+		onCellClick,
+		difficulty,
+		onDifficultyChange,
+		toggleButtons,
+	}) {
 		this.root = root
+		this.view = view
+		this.toggleButtons = toggleButtons
 		this.onGameWinFromProps = onGameWin
 		this.onGameLoseFromProps = onGameLose
 		this.onCellClickFromProps = onCellClick
 		resetButton.addEventListener('click', this.resetGame)
+		changeDifficultyButton.addEventListener(
+			'click',
+			this.changeDifficultyAndResetGame
+		)
 		this.game = null
 		this.difficulty = difficulty
+		this.onDifficultyChange = onDifficultyChange
 	}
 
 	init = () => {
 		const { width, height, mines, wrongs } = this.difficulty
 		this.game = new Game({
-			root: document.querySelector('#game'),
+			root: this.root,
+			view: this.view,
 			width,
 			height,
 			mines,
@@ -30,15 +45,6 @@ export default class Saper {
 		this.game.init()
 	}
 
-	toggleButton(display) {
-		if (display && resetButton.classList.contains('hidden')) {
-			resetButton.classList.remove('hidden')
-		}
-		if (!display && !resetButton.classList.contains('hidden')) {
-			resetButton.classList.add('hidden')
-		}
-	}
-
 	onCellClick = (cell) => {
 		if (typeof this.onCellClickFromProps === 'function') {
 			this.onCellClickFromProps(cell)
@@ -46,21 +52,26 @@ export default class Saper {
 	}
 
 	onGameWin = () => {
-		this.toggleButton(true)
+		this.toggleButtons(true)
 		if (typeof this.onGameWinFromProps === 'function') {
 			this.onGameWinFromProps()
 		}
 	}
 
 	onGameLose = () => {
-		this.toggleButton(true)
+		this.toggleButtons(true)
 		if (typeof this.onGameLoseFromProps === 'function') {
 			this.onGameLoseFromProps()
 		}
 	}
 
 	resetGame = () => {
-		this.toggleButton(false)
+		this.toggleButtons(false)
 		this.game.init()
+	}
+
+	changeDifficultyAndResetGame = async () => {
+		const difficulty = await this.view.renderDifficultyLevelSelectAndGetChoice()
+		this.onDifficultyChange(difficulty)
 	}
 }

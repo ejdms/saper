@@ -1,5 +1,15 @@
 export default [
 	{
+		id: 'DEBUG',
+		name: 'debug',
+		width: 5,
+		height: 5,
+		mines: 0,
+		wrongs: 2,
+		experiencePerOpen: 5,
+		experiencePerWin: 30,
+	},
+	{
 		id: 'VERY_EASY',
 		name: 'very easy',
 		width: 5,

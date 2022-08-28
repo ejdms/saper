@@ -4,7 +4,10 @@ export default class View {
 	constructor(root, player) {
 		this.root = root
 		this.player = player
-		this.renderPlayer()
+	}
+
+	hidePlayer() {
+		this.root.innerHTML = ''
 	}
 
 	renderPlayer() {

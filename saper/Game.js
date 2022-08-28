@@ -1,8 +1,7 @@
-import View from './View'
-
 export default class Game {
 	constructor({
 		root,
+		view,
 		width,
 		height,
 		mines,
@@ -14,13 +13,13 @@ export default class Game {
 		topLeftCellSiblingsAreNeverMine = true,
 	}) {
 		this.root = root
+		this.view = view
 		this.width = width
 		this.height = height
 		this.mines = mines
 		this.wrongs = wrongs
 		this.topLeftCellIsAlwaysEmpty = topLeftCellIsAlwaysEmpty
 		this.topLeftCellSiblingsAreNeverMine = topLeftCellSiblingsAreNeverMine
-		this.view = null
 		this.gamefield = []
 		this.onLose = onLose
 		this.onWin = onWin
@@ -310,7 +309,6 @@ export default class Game {
 	}
 
 	init() {
-		this.view = new View(this.root)
 		this.initGamefield(this.width, this.height)
 		this.view.renderGamefield(this.gamefield)
 	}

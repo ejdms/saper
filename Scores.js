@@ -17,6 +17,10 @@ export default class Scores {
 		this.renderScores()
 	}
 
+	hideScores() {
+		this.root.innerHTML = ''
+	}
+
 	renderScores() {
 		const html = `
       <div class="wins">Wins: ${this.wins}</div>
