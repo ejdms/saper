@@ -83,13 +83,7 @@ export default class Game {
 	checkForWin() {
 		const isWin = !this.gamefield.some((row) =>
 			row.some((cell) => {
-				return (
-					!cell.open &&
-					!cell.mine &&
-					!cell.wrong &&
-					!cell.flagMine &&
-					!cell.flagWrong
-				)
+				return !cell.open && !cell.mine && !cell.wrong
 			})
 		)
 		if (isWin && typeof this.onWin === 'function') {
