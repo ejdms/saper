@@ -110,11 +110,11 @@ export default class Game {
 			this.onLose()
 		}
 		this.view.renderGamefield(this.gamefield, cell.mine)
-		if (!cell.mine) {
-			this.checkForWin()
-		}
 		if (this.isCellEmpty(cell)) {
 			this.recursiveOpenEmptySiblings(cell)
+		}
+		if (!cell.mine) {
+			this.checkForWin()
 		}
 	}
 
